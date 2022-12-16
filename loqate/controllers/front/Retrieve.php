@@ -13,6 +13,7 @@ class LoqateRetrieveModuleFrontController extends ModuleFrontControllerCore
 {
     /** @var Capture $apiConnector */
     private $apiConnector;
+    private $version;
 
     public function __construct()
     {
@@ -20,6 +21,8 @@ class LoqateRetrieveModuleFrontController extends ModuleFrontControllerCore
         if ($apiKey = Configuration::get('LOQ_API_KEY')) {
             $this->apiConnector = new Capture($apiKey);
         }
+        $module = Module::getInstanceByName('Loqate');
+        $this->version = 'Prestashop_v' . $module->version;
     }
 
     public function initContent()
@@ -27,7 +30,7 @@ class LoqateRetrieveModuleFrontController extends ModuleFrontControllerCore
         if ($this->apiConnector) {
             $addressId = Tools::getValue('address_id');
             $page = ucfirst(Tools::getValue('page'));
-            $apiRequestParams = ['Id' => $addressId];
+            $apiRequestParams = ['Id' => $addressId, 'source' => $this->version];
 
             $result = $this->apiConnector->retrieve($apiRequestParams);
 

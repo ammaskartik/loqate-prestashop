@@ -14,6 +14,7 @@ class LoqateFindModuleFrontController extends ModuleFrontControllerCore
     /** @var Capture $apiConnector */
     private $apiConnector;
     private $enabled;
+    private $version;
 
     public function __construct()
     {
@@ -28,6 +29,8 @@ class LoqateFindModuleFrontController extends ModuleFrontControllerCore
             ($page == 'adminaddresses' && Configuration::get('LOQ_CAPTURE_ADDRESS_ADMIN'))) {
             $this->enabled = true;
         }
+        $module = Module::getInstanceByName('Loqate');
+        $this->version = 'Prestashop_v' . $module->version;
     }
 
     public function initContent()
@@ -46,7 +49,8 @@ class LoqateFindModuleFrontController extends ModuleFrontControllerCore
 
                 $apiRequestParams = [
                     'Text' => $searchText,
-                    'Countries' => $countriesParam
+                    'Countries' => $countriesParam,
+                    'source' => $this->version
                 ];
 
                 $result = $this->apiConnector->find($apiRequestParams);

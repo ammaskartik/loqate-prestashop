@@ -20,11 +20,15 @@ class Validator
     /** @var Verify $apiConnector */
     private $apiConnector;
 
+    private $version;
+
     public function __construct()
     {
         if ($apiKey = Configuration::get('LOQ_API_KEY')) {
             $this->apiConnector = new Verify($apiKey);
         }
+        $module = Module::getInstanceByName('Loqate');
+        $this->version = 'Prestashop_v' . $module->version;
     }
 
     /**
@@ -35,7 +39,7 @@ class Validator
      */
     public function verifyEmail($emailAddress)
     {
-        $response = $this->apiConnector->verifyEmail(['Email' => $emailAddress]);
+        $response = $this->apiConnector->verifyEmail(['Email' => $emailAddress, 'source' => $this->version]);
 
         if (isset($response['error'])) {
             PrestaShopLogger::addLog("Loqate Module - verify email: " . $response['message']);
@@ -56,7 +60,8 @@ class Validator
     {
         $response = $this->apiConnector->verifyPhone([
             'Phone' => $phoneNumber,
-            'Country' => $countryIso
+            'Country' => $countryIso,
+            'source' => $this->version
         ]);
 
         if (isset($response['error'])) {
@@ -77,7 +82,7 @@ class Validator
     public function verifyAddress($addresses)
     {
         $requestArray = $this->parseAddresses($addresses);
-        $response = $this->apiConnector->verifyAddress(['Addresses' => $requestArray]);
+        $response = $this->apiConnector->verifyAddress(['Addresses' => $requestArray, 'source' => $this->version]);
 
         if (isset($response['error'])) {
             PrestaShopLogger::addLog("Loqate Module - verify address: " . $response['message']);
