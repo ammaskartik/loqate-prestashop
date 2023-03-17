@@ -1,5 +1,5 @@
 {
-  "name": "loqate/api-connector",
+  "name": "loqate-integration/prestashop",
   "description": "Loqate API connector",
   "type": "library",
   "require": {
